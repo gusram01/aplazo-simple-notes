@@ -1,0 +1,17 @@
+@use "~@angular/material" as mat;
+
+:host {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  row-gap: 1.5em;
+  width: 100%;
+}
+
+mat-card {
+  cursor: pointer;
+  width: 90%;
+  &:hover {
+    @include mat.elevation(2, #121212, 0.75);
+  }
+}

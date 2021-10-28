@@ -1,14 +1,12 @@
 <app-layout title="My notes">
   <ng-container *ngIf="notes$ | async as notes">
-    <ng-container *ngIf="notes.length > 0; else emptyNotes">
-      <app-note-card *ngFor="let note of notes" [note]="note"></app-note-card>
-    </ng-container>
-
-    <ng-template #emptyNotes>
-      <h2>No notes yet, add some notes first!!</h2>
-    </ng-template>
+    <app-notes
+      [notes]="notes"
+      emptyMessage="No notes yet, add some notes first!!"
+    ></app-notes>
   </ng-container>
   <button
+    class="fab-button"
     color="primary"
     aria-label="add note"
     mat-fab

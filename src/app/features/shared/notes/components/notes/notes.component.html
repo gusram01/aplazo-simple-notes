@@ -1,0 +1,20 @@
+<ng-container *ngIf="notes">
+  <ng-container *ngIf="notes.length > 0; else emptyNotes">
+    <mat-card
+      *ngFor="let note of notes"
+      (click)="goToUpdateNoteRoute(note)"
+      class="mat-elevation-z4"
+    >
+      <mat-card-title>
+        {{ note.title }}
+      </mat-card-title>
+      <mat-card-subtitle>
+        {{ note.createdAt | date: "dd-MM-yyyy" }}
+      </mat-card-subtitle>
+    </mat-card>
+  </ng-container>
+
+  <ng-template #emptyNotes>
+    <h2>{{ emptyMessage || "No items yet!!" }}</h2>
+  </ng-template>
+</ng-container>
