@@ -6,3 +6,7 @@ mat-card {
   width: min(500px, 82vw);
   margin: min(10vh, 2em) auto 0;
 }
+
+mat-drawer-content {
+  min-height: 90vh;
+}
