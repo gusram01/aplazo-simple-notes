@@ -1,0 +1,10 @@
+<mat-toolbar>
+  <span>
+    {{ title || "" }}
+  </span>
+</mat-toolbar>
+<mat-drawer-container class="container">
+  <mat-drawer-content>
+    <ng-content></ng-content>
+  </mat-drawer-content>
+</mat-drawer-container>
