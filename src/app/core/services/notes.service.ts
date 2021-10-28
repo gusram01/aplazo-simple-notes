@@ -1,19 +1,29 @@
 import { Injectable } from '@angular/core';
+import { MatSnackBar } from '@angular/material/snack-bar';
+
 import { from, Observable, throwError } from 'rxjs';
+import { catchError, map, switchMap, tap } from 'rxjs/operators';
 
 import { StorageService } from './storage.service';
 
 import { Note } from '../models/Note';
-import { map, switchMap } from 'rxjs/operators';
 
 @Injectable({
   providedIn: 'root',
 })
 export class NotesService {
-  constructor(private storageService: StorageService) {}
+  constructor(
+    private storageService: StorageService,
+    private snackBar: MatSnackBar
+  ) {}
 
   getNotes(): Observable<Note[]> {
-    return from(this.storageService.getNotes());
+    return from(this.storageService.getNotes()).pipe(
+      catchError((error: any) => {
+        this.snackBar.open(error.message);
+        return throwError(error);
+      })
+    );
   }
 
   getNoteById(id: string): Observable<Note | undefined> {
@@ -25,6 +35,10 @@ export class NotesService {
           throwError(`Note with id: <${id}>, not found`);
         }
         return note;
+      }),
+      catchError((error: any) => {
+        this.snackBar.open(error.message);
+        return throwError(error);
       })
     );
   }
@@ -34,6 +48,13 @@ export class NotesService {
       switchMap((notes) => {
         const newNotes = [...notes, note];
         return from(this.storageService.setNotes(newNotes));
+      }),
+      tap(() => {
+        this.snackBar.open('Note added successfully');
+      }),
+      catchError((error: any) => {
+        this.snackBar.open(error.message);
+        return throwError(error);
       })
     );
   }
@@ -56,6 +77,13 @@ export class NotesService {
         const newNotes = notes.splice(storedNoteIndex, 1, note);
 
         return from(this.storageService.setNotes(newNotes));
+      }),
+      tap(() => {
+        this.snackBar.open('Note updated successfully');
+      }),
+      catchError((error: any) => {
+        this.snackBar.open(error.message);
+        return throwError(error);
       })
     );
   }
@@ -68,11 +96,18 @@ export class NotesService {
         );
 
         if (storedNoteIndex < 0) {
-          return throwError(`Note with title: <${note.title}>, not found`);
+          return throwError(`Note with id: <${id}>, not found`);
         }
         const newNotes = notes.splice(storedNoteIndex, 1);
 
         return from(this.storageService.setNotes(newNotes));
+      }),
+      tap(() => {
+        this.snackBar.open('Note deleted successfully');
+      }),
+      catchError((error: any) => {
+        this.snackBar.open(error.message);
+        return throwError(error);
       })
     );
   }
