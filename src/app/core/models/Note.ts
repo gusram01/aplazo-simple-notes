@@ -26,5 +26,11 @@ export const factoryNote = (title: string, content: string) => {
   const id = nanoid();
   const currentDate = new Date();
 
-  return new Note(id, title, content, currentDate, false);
+  return new Note(
+    id,
+    title.trim().toUpperCase(),
+    content.trim().toUpperCase(),
+    currentDate,
+    false
+  );
 };
