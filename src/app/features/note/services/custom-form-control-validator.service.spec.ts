@@ -6,7 +6,9 @@ describe('CustomFormControlValidatorService', () => {
   let service: CustomFormControlValidatorService;
 
   beforeEach(() => {
-    TestBed.configureTestingModule({});
+    TestBed.configureTestingModule({
+      providers: [CustomFormControlValidatorService],
+    });
     service = TestBed.inject(CustomFormControlValidatorService);
   });
 
