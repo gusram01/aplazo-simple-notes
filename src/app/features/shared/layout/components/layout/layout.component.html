@@ -1,8 +1,10 @@
 <mat-toolbar>
-  <ng-content select="[backButton]"></ng-content>
-  <span>
-    {{ title || "" }}
-  </span>
+  <div class="toolbar__container">
+    <app-nav-menu select="[navMenu]"></app-nav-menu>
+    <span>
+      {{ title || "" }}
+    </span>
+  </div>
 </mat-toolbar>
 <mat-drawer-container class="container">
   <mat-drawer-content>
