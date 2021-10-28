@@ -40,7 +40,7 @@ export class NoteComponent implements OnInit, OnDestroy {
         filter((navigationEvent) => navigationEvent instanceof NavigationEnd)
       )
       .subscribe(() => {
-        this.updateOrSaveNote();
+        this.setFormValuesOrClearForm();
       });
   }
 
@@ -58,6 +58,10 @@ export class NoteComponent implements OnInit, OnDestroy {
       : `Created at: ${this.currentNote?.createdAt.toDateString()}`;
   }
 
+  get isArchived(): boolean {
+    return this.getInputByName('isArchived')?.value;
+  }
+
   get hasTitleRequiredError() {
     return this.hasInputErrorByNameAndError('title', 'required');
   }
@@ -71,33 +75,64 @@ export class NoteComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit(): void {
-    this.updateOrSaveNote();
+    this.setFormValuesOrClearForm();
   }
 
   ngOnDestroy(): void {
     this.routerNavigationEndSubscription.unsubscribe();
   }
 
-  saveNote(): void {
+  submitForm(): void {
     this.noteForm.markAllAsTouched();
 
     if (this.noteForm.valid && this.isNewNote) {
-      const { title, content } = this.noteForm.value;
-      const newNote = factoryNote(title, content);
+      this.addNote();
+    }
 
-      this.noteService
-        .addNote(newNote)
-        .pipe(
-          tap(() => {
-            this.router.navigate([RoutesNames.rootNote, newNote.id]);
-          })
-        )
-        .subscribe();
+    if (this.noteForm.valid && !this.noteForm.pristine && !this.isNewNote) {
+      this.updateNote();
     }
   }
 
   goHome(): void {
     this.router.navigate([RoutesNames.rootHome]);
+  }
+
+  private addNote(): void {
+    const { title, content } = this.noteForm.value;
+    const newNote = factoryNote(title, content);
+
+    this.noteService
+      .addNote(newNote)
+      .pipe(
+        tap(() => {
+          this.router.navigate([RoutesNames.rootNote, newNote.id]);
+        })
+      )
+      .subscribe();
+  }
+  private updateNote(): void {
+    const updatedNote = {
+      ...this.currentNote,
+      ...this.noteForm.value,
+    };
+
+    const note = new Note(
+      updatedNote.id,
+      updatedNote.title,
+      updatedNote.content,
+      updatedNote.createdAt,
+      updatedNote.isArchived
+    );
+
+    this.noteService
+      .updateNote(note)
+      .pipe(
+        tap(() => {
+          this.router.navigate([RoutesNames.rootHome]);
+        })
+      )
+      .subscribe();
   }
 
   private setInitialForm(): FormGroup {
@@ -110,23 +145,25 @@ export class NoteComponent implements OnInit, OnDestroy {
         ],
       ],
       content: ['', [Validators.required]],
+      isArchived: [false],
     });
   }
 
-  private updateOrSaveNote(): void {
+  private setFormValuesOrClearForm(): void {
     if (!this.isNewNote) {
-      this.fillTheformWithNote();
+      this.getNoteAndFillForm();
     } else {
       this.noteForm.reset();
     }
   }
 
-  private fillTheformWithNote(): void {
+  private getNoteAndFillForm(): void {
     this.noteService.getNoteById(this.currentId).subscribe((note) => {
       this.currentNote = note;
       this.noteForm.patchValue({
         title: this.currentNote?.title,
         content: this.currentNote?.content,
+        isArchived: this.currentNote?.isArchived,
       });
     });
   }

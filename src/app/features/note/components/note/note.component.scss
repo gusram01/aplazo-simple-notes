@@ -6,12 +6,29 @@
   width: 100%;
   min-height: 300px;
 
-  &__field {
+  &__field,
+  &__actions {
     width: 90%;
     margin: 0 auto;
+  }
+
+  &__actions {
+    display: flex;
+    justify-content: center;
+    align-items: center;
   }
 }
 
 textarea {
   resize: none !important;
+}
+
+mat-checkbox {
+  align-self: flex-start;
+  margin-block: 1em;
+  margin-left: 1em;
+}
+
+button {
+  width: 100%;
 }

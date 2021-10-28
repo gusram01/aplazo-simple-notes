@@ -15,14 +15,18 @@ export class Note {
     isArchived: boolean
   ) {
     this.id = id;
-    this.title = title;
-    this.content = content;
+    this.title = title.trim().toUpperCase();
+    this.content = content.trim().toUpperCase();
     this.createdAt = createdAt;
     this.isArchived = isArchived;
   }
 }
 
-export const factoryNote = (title: string, content: string) => {
+export const factoryNote = (
+  title: string,
+  content: string,
+  isArchived = false
+) => {
   const id = nanoid();
   const currentDate = new Date();
 
@@ -31,6 +35,6 @@ export const factoryNote = (title: string, content: string) => {
     title.trim().toUpperCase(),
     content.trim().toUpperCase(),
     currentDate,
-    false
+    isArchived
   );
 };

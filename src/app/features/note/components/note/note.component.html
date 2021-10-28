@@ -1,14 +1,5 @@
 <app-layout [title]="title">
-  <button
-    mat-icon-button
-    aria-label="home button"
-    backButton
-    (click)="goHome()"
-  >
-    <mat-icon>home</mat-icon>
-  </button>
-
-  <form class="form" [formGroup]="noteForm" (submit)="saveNote()">
+  <form class="form" [formGroup]="noteForm" (submit)="submitForm()">
     <mat-form-field class="form__field" appearance="fill" color="accent">
       <mat-label>Title</mat-label>
       <input matInput placeholder="Write a title..." formControlName="title" />
@@ -31,8 +22,14 @@
       </mat-error>
     </mat-form-field>
 
+    <mat-checkbox formControlName="isArchived">
+      {{ isArchived ? "Stored Note" : "Normal Note" }}
+    </mat-checkbox>
+
     <div class="form__actions">
-      <button mat-stroked-button color="accent" type="submit">Save note</button>
+      <button mat-stroked-button color="accent" type="submit">
+        {{ isNewNote ? "Add note" : "Update note" }}
+      </button>
     </div>
   </form>
 </app-layout>

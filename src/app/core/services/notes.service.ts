@@ -69,19 +69,26 @@ export class NotesService {
           return throwError(`Note with title: <${note.title}>, not found`);
         }
 
-        if (notes[storedNoteIndex].createdAt !== note.createdAt) {
+        if (
+          notes[storedNoteIndex].createdAt.toISOString() !==
+          note.createdAt.toISOString()
+        ) {
           return throwError("Can't change creation date");
         }
 
-        const newNotes = notes.splice(storedNoteIndex, 1, note);
+        if (this.hasObjectsSameKeyValue(notes[storedNoteIndex], note)) {
+          return throwError('Nothing to update');
+        }
 
-        return from(this.storageService.setNotes(newNotes));
+        notes.splice(storedNoteIndex, 1, note);
+
+        return from(this.storageService.setNotes(notes));
       }),
       tap(() => {
         this.snackBar.open('Note updated successfully');
       }),
       catchError((error: any) => {
-        this.snackBar.open(error.message);
+        this.snackBar.open(error.message || error);
         return throwError(error);
       })
     );
@@ -109,5 +116,23 @@ export class NotesService {
         return throwError(error);
       })
     );
+  }
+
+  private hasObjectsSameKeyValue<T>(object1: T, object2: T): boolean {
+    return Object.entries(object1).every(([key, value]) => {
+      //@ts-expect-error
+      if (typeof value === 'string' && object2[key] !== value) {
+        return false;
+      }
+      if (
+        typeof value !== 'string' &&
+        //@ts-expect-error
+        new Date(object2[key]).toISOString() !== new Date(value).toISOString()
+      ) {
+        return false;
+      }
+
+      return true;
+    });
   }
 }

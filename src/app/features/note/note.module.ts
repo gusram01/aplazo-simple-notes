@@ -6,6 +6,7 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
+import { MatCheckboxModule } from '@angular/material/checkbox';
 
 import { NoteRoutingModule } from './note-routing.module';
 
@@ -23,6 +24,7 @@ import { LayoutModule } from '../shared/layout/layout.module';
     MatInputModule,
     MatButtonModule,
     MatIconModule,
+    MatCheckboxModule,
   ],
 })
 export class NoteModule {}
