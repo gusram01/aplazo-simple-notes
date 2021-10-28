@@ -1,1 +1,38 @@
-<p>note works!</p>
+<app-layout [title]="title">
+  <button
+    mat-icon-button
+    aria-label="home button"
+    backButton
+    (click)="goHome()"
+  >
+    <mat-icon>home</mat-icon>
+  </button>
+
+  <form class="form" [formGroup]="noteForm" (submit)="saveNote()">
+    <mat-form-field class="form__field" appearance="fill" color="accent">
+      <mat-label>Title</mat-label>
+      <input matInput placeholder="Write a title..." formControlName="title" />
+      <mat-error *ngIf="hasTitleRequiredError"> Title is required </mat-error>
+      <mat-error *ngIf="hasTitlePatternError">
+        Title can't be similar to email
+      </mat-error>
+    </mat-form-field>
+
+    <mat-form-field class="form__field" appearance="fill" color="accent">
+      <mat-label>Note</mat-label>
+      <textarea
+        matInput
+        placeholder="Write your note..."
+        formControlName="content"
+        rows="5"
+      ></textarea>
+      <mat-error *ngIf="hasContentRequiredError">
+        A text for the note is required
+      </mat-error>
+    </mat-form-field>
+
+    <div class="form__actions">
+      <button mat-stroked-button color="accent" type="submit">Save note</button>
+    </div>
+  </form>
+</app-layout>
