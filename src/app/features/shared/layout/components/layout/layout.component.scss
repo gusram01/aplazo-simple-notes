@@ -2,6 +2,11 @@
   min-height: 90vh;
 }
 
+mat-toolbar {
+  display: flex;
+  justify-content: space-between;
+}
+
 mat-card {
   width: min(500px, 82vw);
   margin: min(10vh, 2em) auto 0;
