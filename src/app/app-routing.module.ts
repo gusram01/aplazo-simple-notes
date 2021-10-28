@@ -17,6 +17,11 @@ const routes: Routes = [
       ),
   },
   {
+    path: RoutesNames.rootArchive,
+    loadChildren: () =>
+      import('./features/archive/archive.module').then((m) => m.ArchiveModule),
+  },
+  {
     path: `${RoutesNames.rootNote}/:id`,
     loadChildren: () =>
       import('./features/note/note.module').then((m) => m.NoteModule),

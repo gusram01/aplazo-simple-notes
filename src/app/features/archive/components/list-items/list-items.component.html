@@ -1,0 +1,18 @@
+<app-layout title="Archive">
+  <ng-container *ngIf="notes$ | async as notes">
+    <app-notes
+      [notes]="notes"
+      emptyMessage="No archive notes yet  :("
+    ></app-notes>
+  </ng-container>
+  <button
+    class="fab-button"
+    color="primary"
+    aria-label="add note"
+    mat-fab
+    fabButton
+    (click)="goToAddNewNoteRoute()"
+  >
+    <mat-icon>add</mat-icon>
+  </button>
+</app-layout>
