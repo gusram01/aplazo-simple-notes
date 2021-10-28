@@ -26,13 +26,12 @@ export class NotesService {
     );
   }
 
-  getNoteById(id: string): Observable<Note | undefined> {
+  getNoteById(id: string): Observable<Note> {
     return from(this.storageService.getNotes()).pipe(
       map((notes) => {
         const note = notes.find((storedNote) => storedNote.id === id);
-
         if (!note) {
-          throwError(`Note with id: <${id}>, not found`);
+          throw new Error(`Note with id: <${id}>, not found`);
         }
         return note;
       }),
