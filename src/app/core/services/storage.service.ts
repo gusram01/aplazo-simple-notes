@@ -1,8 +1,6 @@
 import { Injectable } from '@angular/core';
 
 import * as localStorage from 'localforage';
-import { from, Observable } from 'rxjs';
-import { map, tap } from 'rxjs/operators';
 
 import { Note } from '../models/Note';
 
