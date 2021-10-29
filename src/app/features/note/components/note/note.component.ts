@@ -6,13 +6,13 @@ import {
   Validators,
 } from '@angular/forms';
 import { ActivatedRoute, NavigationEnd, Router, Event } from '@angular/router';
-import { filter, tap } from 'rxjs/operators';
+import { distinctUntilChanged, filter, map, tap } from 'rxjs/operators';
 
 import { factoryNote, Note } from 'src/app/core/models/Note';
 import { NotesService } from 'src/app/core/services/notes.service';
 import { RoutesNames } from 'src/app/core/RoutesNames.enum';
 import { CustomFormControlValidatorService } from '../../services/custom-form-control-validator.service';
-import { Subscription } from 'rxjs';
+import { Observable, Subscription } from 'rxjs';
 
 @Component({
   selector: 'app-note',
@@ -25,6 +25,8 @@ export class NoteComponent implements OnInit, OnDestroy {
   currentNote: Note | undefined;
 
   private routerNavigationEndSubscription: Subscription;
+  private titleSubscription: Subscription | undefined;
+  private contentSubscription: Subscription | undefined;
 
   constructor(
     private router: Router,
@@ -76,10 +78,16 @@ export class NoteComponent implements OnInit, OnDestroy {
 
   ngOnInit(): void {
     this.setFormValuesOrClearForm();
+    this.titleSubscription =
+      this.setUpperCaseValueOnTheFly$('title').subscribe();
+    this.contentSubscription =
+      this.setUpperCaseValueOnTheFly$('content').subscribe();
   }
 
   ngOnDestroy(): void {
     this.routerNavigationEndSubscription.unsubscribe();
+    this.titleSubscription?.unsubscribe();
+    this.contentSubscription?.unsubscribe();
   }
 
   submitForm(): void {
@@ -166,6 +174,18 @@ export class NoteComponent implements OnInit, OnDestroy {
         isArchived: this.currentNote?.isArchived,
       });
     });
+  }
+
+  private setUpperCaseValueOnTheFly$(
+    inputName: 'title' | 'content'
+  ): Observable<string> {
+    return this.getInputByName(inputName)!.valueChanges.pipe(
+      distinctUntilChanged(),
+      map((value) => value.toUpperCase()),
+      tap((value) => {
+        this.noteForm.patchValue({ [inputName]: value });
+      })
+    );
   }
 
   private getInputByName(name: string): AbstractControl | null {
